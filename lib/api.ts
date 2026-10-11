@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { CreateNote, Note } from '../types/note'
+import type { CreateNote, Note, NoteTag } from '../types/note'
 
 interface Response {
   notes: Note[]
@@ -11,12 +11,19 @@ const api = axios.create({
   headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}` },
 })
 
-export const fetchNotes = async (page: number, search: string): Promise<Response> => {
+export const fetchNotes = async (
+  page: number,
+  search: string,
+  tag?: NoteTag
+): Promise<Response> => {
   const { data } = await api.get<Response>('/notes', {
-    params: { page, search, perPage: 12 },
+    params: {
+      page,
+      search,
+      perPage: 12,
+      ...(tag && { tag }),
+    },
   })
-
-  console.log('API response:', data)
 
   return data
 }

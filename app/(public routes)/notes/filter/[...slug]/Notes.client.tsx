@@ -11,10 +11,14 @@ import ErrorMessage from '@/components/ErrorMessage/ErrorMessage'
 import Modal from '@/components/Modal/Modal'
 import NoteForm from '@/components/NoteForm/NoteForm'
 import EmptyState from '@/components/EmptyState/EmptyState'
-
 import styles from './Notes.module.css'
+import { NoteTag } from '@/types/note'
 
-const NotesClient = () => {
+interface NotesClientProps {
+  tag?: NoteTag
+}
+
+const NotesClient = ({ tag }: NotesClientProps) => {
   const [searchInput, setSearchInput] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -26,8 +30,8 @@ const NotesClient = () => {
   }, 300)
 
   const { data, isSuccess, isLoading, error, isError, isFetching } = useQuery({
-    queryKey: ['notes', searchQuery, currentPage],
-    queryFn: () => fetchNotes(currentPage, searchQuery),
+    queryKey: ['notes', tag ?? 'all', searchQuery, currentPage],
+    queryFn: () => fetchNotes(currentPage, searchQuery, tag),
     placeholderData: keepPreviousData,
     refetchOnMount: false,
   })
@@ -73,7 +77,9 @@ const NotesClient = () => {
             />
           )}
 
-          {isSuccess && data.notes.length === 0 && <EmptyState searchQuery={searchQuery} />}
+          {isSuccess && data.notes.length === 0 && (
+            <EmptyState searchQuery={searchQuery} tag={tag} />
+          )}
 
           {isModalVisible && (
             <Modal onClose={() => setIsModalVisible(false)}>

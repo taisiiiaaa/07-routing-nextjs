@@ -2,6 +2,7 @@
 import { createPortal } from 'react-dom'
 import { useEffect } from 'react'
 import styles from './Modal.module.css'
+import { useRouter } from 'next/navigation'
 
 interface ModalProps {
   children: React.ReactNode
@@ -10,6 +11,9 @@ interface ModalProps {
 
 const Modal = ({ children, onClose }: ModalProps) => {
   const modalRoot = document.getElementById('modal-root')
+
+  const router = useRouter()
+  const close = () => router.back()
 
   useEffect(() => {
     if (!modalRoot) return
@@ -26,7 +30,7 @@ const Modal = ({ children, onClose }: ModalProps) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose()
+        close()
       }
     }
 
@@ -35,11 +39,11 @@ const Modal = ({ children, onClose }: ModalProps) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [onClose])
+  }, [close])
 
   const handleCloseModal = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
-      onClose()
+      close()
     }
   }
 

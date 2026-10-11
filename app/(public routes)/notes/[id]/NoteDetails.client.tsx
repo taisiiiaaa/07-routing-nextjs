@@ -29,19 +29,15 @@ const NoteDetailsClient = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.item}>
-          <div className={styles.header}>
-            <h2>{note.title}</h2>
-          </div>
-
-          <p className={styles.tag}>{note.tag}</p>
-
-          <p className={styles.content}>{note.content}</p>
-
-          <p className={styles.date}>{new Date(note.createdAt).toLocaleDateString()}</p>
-        </div>
+      <div className={styles.header}>
+        <h2>{note.title}</h2>
       </div>
+
+      <p className={styles.tag}>{note.tag}</p>
+
+      <p className={styles.content}>{note.content}</p>
+
+      <p className={styles.date}>{new Date(note.createdAt).toLocaleDateString()}</p>
     </>
   )
 }
