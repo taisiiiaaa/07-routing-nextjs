@@ -2,7 +2,6 @@
 import { createPortal } from 'react-dom'
 import { useEffect } from 'react'
 import styles from './Modal.module.css'
-import { useRouter } from 'next/navigation'
 
 interface ModalProps {
   children: React.ReactNode
@@ -12,14 +11,10 @@ interface ModalProps {
 const Modal = ({ children, onClose }: ModalProps) => {
   const modalRoot = document.getElementById('modal-root')
 
-  const router = useRouter()
-  const close = () => router.back()
-
   useEffect(() => {
     if (!modalRoot) return
 
     const originalOverflow = document.body.style.overflow
-
     document.body.style.overflow = 'hidden'
 
     return () => {
@@ -30,7 +25,7 @@ const Modal = ({ children, onClose }: ModalProps) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        close()
+        onClose()
       }
     }
 
@@ -39,17 +34,15 @@ const Modal = ({ children, onClose }: ModalProps) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [close])
+  }, [onClose])
 
   const handleCloseModal = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
-      close()
+      onClose()
     }
   }
 
-  if (!modalRoot) {
-    return null
-  }
+  if (!modalRoot) return null
 
   return createPortal(
     <div className={styles.backdrop} onClick={handleCloseModal} role='dialog' aria-modal='true'>

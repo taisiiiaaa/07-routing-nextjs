@@ -41,6 +41,10 @@ const NotesClient = ({ tag }: NotesClientProps) => {
     debouncedSearch(value)
   }
 
+  const handleCloseModal = () => {
+    setIsModalVisible(false)
+  }
+
   return (
     <div className={styles.app}>
       <header className={styles.toolbar}>
@@ -82,8 +86,8 @@ const NotesClient = ({ tag }: NotesClientProps) => {
           )}
 
           {isModalVisible && (
-            <Modal onClose={() => setIsModalVisible(false)}>
-              <NoteForm onClose={() => setIsModalVisible(false)} />
+            <Modal onClose={handleCloseModal}>
+              <NoteForm onClose={handleCloseModal} />
             </Modal>
           )}
         </section>
