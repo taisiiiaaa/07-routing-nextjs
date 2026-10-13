@@ -1,18 +1,40 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import Modal from '@/components/Modal/Modal'
-import type { Note } from '@/types/note'
+import Loader from '@/components/Loader/Loader'
+import ErrorMessage from '@/components/ErrorMessage/ErrorMessage'
+import { fetchNoteById } from '@/lib/api'
 import styles from './NotePreview.module.css'
 
-interface NotePreviewClientProps {
-  note: Note
-}
-
-const NotePreviewClient = ({ note }: NotePreviewClientProps) => {
+const NotePreviewClient = () => {
+  const { id } = useParams<{ id: string }>()
   const router = useRouter()
+
+  const {
+    data: note,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['note', id],
+    queryFn: () => fetchNoteById(id),
+    refetchOnMount: false,
+  })
 
   const handleClose = () => {
     router.back()
+  }
+
+  if (isLoading) {
+    return <Loader />
+  }
+
+  if (isError || !note) {
+    return (
+      <Modal onClose={handleClose}>
+        <ErrorMessage message='Failed to load note details.' />
+      </Modal>
+    )
   }
 
   return (
